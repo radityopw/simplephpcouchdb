@@ -53,7 +53,7 @@ function simple_php_couchdb_create_db($url, $db) {
     return json_decode($response, true);
 }
 
-function simple_php_couchdb_get_uuid($url) {
+function simple_php_couchdb_get_uuid($url,$count = 1) {
     $ch = curl_init();
 
     curl_setopt($ch, CURLOPT_URL, $url . '_uuids');
@@ -74,7 +74,7 @@ function simple_php_couchdb_get_uuid($url) {
     return $UUID;
 }
 
-function simple_php_couchdb_set_doc($url, $db, $doc_id, $data = array()) {
+function simple_php_couchdb_set_doc($url, $db, $doc_id, Array $data) {
     $ch = curl_init();
 
     $payload = json_encode($data);
@@ -116,3 +116,44 @@ function simple_php_couchdb_get_doc($url, $db, $doc_id) {
     return json_decode($response,true);
 }
 
+function simple_php_couchdb_list_all_docs($url,$db, $detail = false){
+    $ch = curl_init();
+    
+    if(!$detail){
+        $detail = "false";
+    }else{
+        $detail = "true";
+    }
+    
+    curl_setopt($ch, CURLOPT_URL, $url . $db.'/_all_docs?include_docs='.$detail);
+    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+        'Content-type: application/json',
+        'Accept: */*'
+    ));
+
+    $response = curl_exec($ch);
+
+    curl_close($ch);
+
+    return json_decode($response, true);
+}
+
+function simple_php_couchdb_get_view($url,$db,$design_table,$view_name,$params=""){
+    $ch = curl_init();
+    
+    curl_setopt($ch, CURLOPT_URL, $url . $db.'/_design/'.$design_table.'/_view/'.$view_name."?".$params);
+    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+        'Content-type: application/json',
+        'Accept: */*'
+    ));
+
+    $response = curl_exec($ch);
+
+    curl_close($ch);
+
+    return json_decode($response, true);
+}
