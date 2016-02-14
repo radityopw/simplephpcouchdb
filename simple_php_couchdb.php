@@ -143,17 +143,18 @@ function simple_php_couchdb_list_all_docs($url,$db, $detail = false){
 function simple_php_couchdb_get_view($url,$db,$design_table,$view_name,$params=""){
     $ch = curl_init();
     
-    curl_setopt($ch, CURLOPT_URL, $url . $db.'/_design/'.$design_table.'/_view/'.$view_name."?".$params);
+    curl_setopt($ch, CURLOPT_URL, $url . $db.'/_design/'.$design_table.'/_view/'.$view_name.'?'.$params);
     curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_HTTPHEADER, array(
         'Content-type: application/json',
         'Accept: */*'
     ));
-
+    
     $response = curl_exec($ch);
-
+    
     curl_close($ch);
+    
 
     return json_decode($response, true);
 }
